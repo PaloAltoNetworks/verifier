@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: verifier
+  labels:
+    app: verifier
+spec:
+  type: NodePort
+  ports:
+  - port: 5000
+    name: http
+  selector:
+    app: verifier
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: verifier
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: verifier
+        version: 0.1
+    spec:
+      containers:
+      - name: verifier
+        image: frankb/verifier:0.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+---

@@ -1,0 +1,31 @@
+# Rule 1: send traffic for destination: "details" to "verifier:0.1"
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: details-verified
+spec:
+  destination:
+    name: details
+  precedence: 2
+  route:
+  - destination:
+      name: verifier
+    labels:
+      version: "0.1"
+---
+# Rule 2: send traffic from source: "verifier" for destination: "details" to "details:v1"
+apiVersion: config.istio.io/v1alpha2
+kind: RouteRule
+metadata:
+  name: details-forward
+spec:
+  destination:
+    name: details
+  match:
+    source:
+      name: verifier
+  precedence: 3
+  route:
+  - labels:
+      version: v1
+---
